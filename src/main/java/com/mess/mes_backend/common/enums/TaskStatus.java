@@ -5,10 +5,10 @@ import lombok.Getter;
 
 @Getter
 public enum TaskStatus {
-    LOCKED(0, "Locked"),
-    PENDING(1, "Pending"),
-    RUNNING(2, "Running"),
-    COMPLETED(3, "Completed");
+    LOCKED(0, "锁定"),
+    PENDING(1, "待办"),
+    RUNNING(2, "进行中"),
+    COMPLETED(3, "完成");
 
     @EnumValue
     private final int code;
