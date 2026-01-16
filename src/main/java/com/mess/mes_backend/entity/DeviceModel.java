@@ -7,7 +7,7 @@ import lombok.Data;
 import java.time.LocalDateTime;
 
 @Data
-@TableName("t_device_model")
+@TableName("mes_device_model")
 public class DeviceModel {
     @TableId(type = IdType.AUTO)
     private Long id;

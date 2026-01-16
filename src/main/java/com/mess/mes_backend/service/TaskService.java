@@ -21,13 +21,21 @@ public class TaskService {
     @Autowired
     private ProcessLinkTplMapper linkMapper;
 
+    public List<TaskInstance> getTasksByProject(Long projectId) {
+        QueryWrapper<TaskInstance> query = new QueryWrapper<>();
+        query.eq("project_id", projectId);
+        return taskMapper.selectList(query);
+    }
+
     @Transactional(rollbackFor = Exception.class)
-    public void completeTask(Long taskId) {
+    public void completeTask(Long taskId, Long operatorId) {
         // 1. Update current task status to Completed (3)
         TaskInstance currentTask = taskMapper.selectById(taskId);
         if (currentTask == null) return;
         
         currentTask.setStatus(3);
+        currentTask.setOperatorId(operatorId);
+        currentTask.setEndTime(java.time.LocalDateTime.now());
         taskMapper.updateById(currentTask);
 
         // 2. Find next node templates based on current task's node template

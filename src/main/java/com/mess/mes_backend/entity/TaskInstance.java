@@ -15,6 +15,7 @@ public class TaskInstance {
     private Long nodeTplId;
     private String taskName;
     private Integer status; // 0:Locked 1:Pending 2:Running 3:Completed
+    private Long operatorId;
     private LocalDateTime startTime;
     private LocalDateTime endTime;
 }

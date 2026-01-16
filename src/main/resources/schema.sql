@@ -8,6 +8,7 @@ CREATE TABLE `mes_process_node_tpl` (
   `model_id` BIGINT NOT NULL COMMENT '所属型号ID',
   `process_name` VARCHAR(100) NOT NULL COMMENT '工序名称',
   `std_time` INT DEFAULT 0 COMMENT '标准工时(分钟)',
+  `allow_parallel` INT DEFAULT 0 COMMENT '是否允许并行',
   PRIMARY KEY (`id`)
 ) COMMENT='工序节点模版表';
 
