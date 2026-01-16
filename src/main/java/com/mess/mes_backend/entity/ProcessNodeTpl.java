@@ -11,7 +11,7 @@ public class ProcessNodeTpl {
     @TableId(type = IdType.AUTO)
     private Long id;
     private Long modelId;
-    private String nodeName;
+    private String processName;
     private Integer stdTime;
     private Integer allowParallel;
 }

@@ -1,10 +1,10 @@
 package com.mess.mes_backend.service;
 
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.mess.mes_backend.entity.ProcessRelation;
-import com.mess.mes_backend.entity.ProcessTemplate;
-import com.mess.mes_backend.mapper.ProcessRelationMapper;
-import com.mess.mes_backend.mapper.ProcessTemplateMapper;
+import com.mess.mes_backend.entity.ProcessLinkTpl;
+import com.mess.mes_backend.entity.ProcessNodeTpl;
+import com.mess.mes_backend.mapper.ProcessLinkTplMapper;
+import com.mess.mes_backend.mapper.ProcessNodeTplMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -12,16 +12,16 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 
 @Service
-public class ProcessService extends ServiceImpl<ProcessTemplateMapper, ProcessTemplate> {
+public class ProcessService extends ServiceImpl<ProcessNodeTplMapper, ProcessNodeTpl> {
 
     @Autowired
-    private ProcessRelationMapper relationMapper;
+    private ProcessLinkTplMapper relationMapper;
 
     /**
      * Create a process node
      */
-    public ProcessTemplate createNode(ProcessTemplate node) {
-        this.save(node); // Call parent save method
+    public ProcessNodeTpl createNode(ProcessNodeTpl node) {
+        this.save(node);
         return node;
     }
 
@@ -30,21 +30,19 @@ public class ProcessService extends ServiceImpl<ProcessTemplateMapper, ProcessTe
      */
     @Transactional
     public String connectNodes(Long preId, Long nextId, Long modelId) {
-        // Here we should add validation (e.g., same model? cycle detection?), skipping for now as per instructions
+        ProcessLinkTpl link = new ProcessLinkTpl();
+        link.setPreProcessId(preId);
+        link.setNextProcessId(nextId);
+        link.setModelId(modelId);
         
-        ProcessRelation relation = new ProcessRelation();
-        relation.setPreProcessId(preId);
-        relation.setNextProcessId(nextId);
-        relation.setModelId(modelId);
-        
-        relationMapper.insert(relation);
+        relationMapper.insert(link);
         return "Connection successful";
     }
 
     /**
      * Get all process nodes for a model
      */
-    public List<ProcessTemplate> getNodesByModel(Long modelId) {
-        return this.lambdaQuery().eq(ProcessTemplate::getModelId, modelId).list();
+    public List<ProcessNodeTpl> getNodesByModel(Long modelId) {
+        return this.lambdaQuery().eq(ProcessNodeTpl::getModelId, modelId).list();
     }
 }

@@ -13,7 +13,7 @@ public class TaskInstance {
     private Long id;
     private Long projectId;
     private Long nodeTplId;
-    private String nodeName;
+    private String taskName;
     private Integer status; // 0:Locked 1:Pending 2:Running 3:Completed
     private LocalDateTime startTime;
     private LocalDateTime endTime;

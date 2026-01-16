@@ -11,6 +11,6 @@ public class ProcessLinkTpl {
     @TableId(type = IdType.AUTO)
     private Long id;
     private Long modelId;
-    private Long prevNodeId;
-    private Long nextNodeId;
+    private Long preProcessId;
+    private Long nextProcessId;
 }

@@ -31,9 +31,9 @@ public class TaskService {
         taskMapper.updateById(currentTask);
 
         // 2. Find next node templates based on current task's node template
-        // We need to find the links where prev_node_id == currentTask.nodeTplId
+        // We need to find the links where pre_process_id == currentTask.nodeTplId
         QueryWrapper<ProcessLinkTpl> linkQuery = new QueryWrapper<>();
-        linkQuery.eq("prev_node_id", currentTask.getNodeTplId());
+        linkQuery.eq("pre_process_id", currentTask.getNodeTplId());
         // Note: we assume the link also respects model_id or project context, 
         // but for simplicity following the snippet we use node IDs.
         List<ProcessLinkTpl> links = linkMapper.selectList(linkQuery);
@@ -43,7 +43,7 @@ public class TaskService {
         }
 
         List<Long> nextNodeTplIds = links.stream()
-                .map(ProcessLinkTpl::getNextNodeId)
+                .map(ProcessLinkTpl::getNextProcessId)
                 .collect(Collectors.toList());
 
         // 3. Find the actual Task Instances for these next nodes within the SAME PROJECT
@@ -66,13 +66,13 @@ public class TaskService {
     private boolean checkAllPrevTasksDone(TaskInstance task) {
         // Find all previous nodes for this task's node
         QueryWrapper<ProcessLinkTpl> prevLinkQuery = new QueryWrapper<>();
-        prevLinkQuery.eq("next_node_id", task.getNodeTplId());
+        prevLinkQuery.eq("next_process_id", task.getNodeTplId());
         List<ProcessLinkTpl> incomingLinks = linkMapper.selectList(prevLinkQuery);
 
         if (incomingLinks.isEmpty()) return true; // No predecessors
 
         List<Long> prevNodeTplIds = incomingLinks.stream()
-                .map(ProcessLinkTpl::getPrevNodeId)
+                .map(ProcessLinkTpl::getPreProcessId)
                 .collect(Collectors.toList());
 
         // Check if ALL these previous nodes have Completed (3) status in the current project
