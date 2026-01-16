@@ -25,57 +25,57 @@ public class ProjectService extends ServiceImpl<ProjectInstanceMapper, ProjectIn
     private TaskInstanceMapper taskInstanceMapper;
 
     /**
-     * Instantiate a Project from Template
+     * 从模板实例化项目
      */
     @Transactional(rollbackFor = Exception.class)
     public Long createProject(String projectNo, String deviceSn, Long modelId) {
-        // 1. Create Project Instance
+        // 1. 创建项目实例
         ProjectInstance project = new ProjectInstance();
         project.setProjectNo(projectNo);
         project.setDeviceSn(deviceSn);
         project.setModelId(modelId);
-        project.setStatus(0); // Not Started
+        project.setStatus(0); // 未开始
         this.save(project);
 
         Long projectId = project.getId();
 
-        // 2. Query all process templates for this model
+        // 2. 查询该模型的所有流程模板
         List<ProcessNodeTpl> nodes = nodeTplMapper.selectList(
                 new com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper<ProcessNodeTpl>()
                         .eq(ProcessNodeTpl::getModelId, modelId)
         );
 
         if (nodes.isEmpty()) {
-            throw new RuntimeException("No process template found for model: " + modelId);
+            throw new RuntimeException("未找到模型的流程模板: " + modelId);
         }
 
-        // 3. Query all links to find topology
+        // 3. 查询所有连接以查找拓扑结构
         List<ProcessLinkTpl> links = linkTplMapper.selectList(
                 new com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper<ProcessLinkTpl>()
                         .eq(ProcessLinkTpl::getModelId, modelId)
         );
 
-        // Identify nodes that are "destinations" (have incoming edges)
+        // 识别作为“目的地”（有入边）的节点
         Set<Long> nodesWithIncomingEdges = links.stream()
                 .map(ProcessLinkTpl::getNextProcessId)
                 .collect(Collectors.toSet());
 
-        // 4. Instantiate Tasks
+        // 4. 实例化任务
         for (ProcessNodeTpl node : nodes) {
             TaskInstance task = new TaskInstance();
             task.setProjectId(projectId);
             task.setNodeTplId(node.getId());
-            task.setTaskName(node.getProcessName()); // Snapshot name
+            task.setTaskName(node.getProcessName()); // 快照名称
 
 // Snapshot name
 
 // ...
-            // If a node is NOT in nodesWithIncomingEdges, it's a Root Node -> Pending (1)
-            // Otherwise -> Locked (0)
+            // 如果节点不在 nodesWithIncomingEdges 中，则是根节点 -> 待办 (1)
+            // 否则 -> 锁定 (0)
             if (!nodesWithIncomingEdges.contains(node.getId())) {
-                task.setStatus(TaskStatus.PENDING); // Pending
+                task.setStatus(TaskStatus.PENDING); // 待办
             } else {
-                task.setStatus(TaskStatus.LOCKED); // Locked
+                task.setStatus(TaskStatus.LOCKED); // 锁定
             }
 
             taskInstanceMapper.insert(task);

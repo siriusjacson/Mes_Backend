@@ -9,9 +9,9 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(Exception.class)
     public Result<String> handleException(Exception e) {
-        // Print stack trace for debugging purposes
+        // 打印堆栈跟踪以进行调试
         e.printStackTrace();
-        // Return unified JSON error response
-        return Result.error(e.getMessage() != null ? e.getMessage() : "Unknown Error");
+        // 返回统一的 JSON 错误响应
+        return Result.error(e.getMessage() != null ? e.getMessage() : "未知错误");
     }
 }

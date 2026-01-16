@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Map;
 import com.mess.mes_backend.common.Result;
 import com.mess.mes_backend.dto.TaskCompleteReq;
+import org.springframework.validation.annotation.Validated;
 
 @RestController
 @RequestMapping("/api/task")
@@ -21,7 +22,7 @@ public class TaskController {
 
 
 // ...
-    // 1. List all tasks for a project
+    // 1. 列出项目的所有任务
     @GetMapping("/list")
     public Result<List<TaskInstance>> listTasks(@RequestParam Long projectId) {
         return Result.success(taskService.getTasksByProject(projectId));
@@ -30,11 +31,12 @@ public class TaskController {
 
 
 // ...
-    // 2. Complete a task
+    // 2. 完成任务
     // Body: { "taskId": 1, "operatorId": 1001 }
+
     @PostMapping("/complete")
-    public Result<String> completeTask(@RequestBody TaskCompleteReq req) {
+    public Result<String> completeTask(@RequestBody @Validated TaskCompleteReq req) {
         taskService.completeTask(req.getTaskId(), req.getOperatorId());
-        return Result.success("Task Completed");
+        return Result.success("任务完成");
     }
 }

@@ -41,7 +41,7 @@ public class TaskService {
         if (currentTask == null) return;
 
         // 2. 更新任务状态
-        currentTask.setStatus(TaskStatus.COMPLETED); // 3: Completed
+        currentTask.setStatus(TaskStatus.COMPLETED); // 3: 完成
         currentTask.setOperatorId(operatorId);
         currentTask.setEndTime(LocalDateTime.now());
         taskMapper.updateById(currentTask);
@@ -81,7 +81,7 @@ public class TaskService {
         // 检查每个下级任务的前置条件是否都满足
         for (TaskInstance nextTask : nextTasks) {
             if (checkAllPrevTasksDone(nextTask)) {
-                nextTask.setStatus(TaskStatus.PENDING); // 1: Pending (解锁，变为可执行)
+                nextTask.setStatus(TaskStatus.PENDING); // 1: 待办 (解锁，变为可执行)
                 taskMapper.updateById(nextTask);
             }
         }
