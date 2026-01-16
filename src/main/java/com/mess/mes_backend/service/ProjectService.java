@@ -10,6 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
+import com.mess.mes_backend.common.enums.TaskStatus;
 
 @Service
 public class ProjectService extends ServiceImpl<ProjectInstanceMapper, ProjectInstance> {
@@ -66,12 +67,15 @@ public class ProjectService extends ServiceImpl<ProjectInstanceMapper, ProjectIn
             task.setNodeTplId(node.getId());
             task.setTaskName(node.getProcessName()); // Snapshot name
 
+// Snapshot name
+
+// ...
             // If a node is NOT in nodesWithIncomingEdges, it's a Root Node -> Pending (1)
             // Otherwise -> Locked (0)
             if (!nodesWithIncomingEdges.contains(node.getId())) {
-                task.setStatus(1); // Pending
+                task.setStatus(TaskStatus.PENDING); // Pending
             } else {
-                task.setStatus(0); // Locked
+                task.setStatus(TaskStatus.LOCKED); // Locked
             }
 
             taskInstanceMapper.insert(task);

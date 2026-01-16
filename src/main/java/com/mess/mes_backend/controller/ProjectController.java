@@ -16,11 +16,11 @@ public class ProjectController {
 
     // Create Project
     @PostMapping("/create")
-    public Long createProject(@RequestBody Map<String, Object> params) {
+    public com.mess.mes_backend.common.Result<Long> createProject(@RequestBody Map<String, Object> params) {
         String projectNo = (String) params.get("projectNo");
         String deviceSn = (String) params.get("deviceSn");
         Long modelId = ((Number) params.get("modelId")).longValue();
         
-        return projectService.createProject(projectNo, deviceSn, modelId);
+        return com.mess.mes_backend.common.Result.success(projectService.createProject(projectNo, deviceSn, modelId));
     }
 }

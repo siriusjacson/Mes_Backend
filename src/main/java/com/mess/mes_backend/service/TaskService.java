@@ -14,6 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
+import com.mess.mes_backend.common.enums.TaskStatus;
 
 @Service
 public class TaskService {
@@ -40,7 +41,7 @@ public class TaskService {
         if (currentTask == null) return;
 
         // 2. 更新任务状态
-        currentTask.setStatus(3); // 3: Completed
+        currentTask.setStatus(TaskStatus.COMPLETED); // 3: Completed
         currentTask.setOperatorId(operatorId);
         currentTask.setEndTime(LocalDateTime.now());
         taskMapper.updateById(currentTask);
@@ -80,7 +81,7 @@ public class TaskService {
         // 检查每个下级任务的前置条件是否都满足
         for (TaskInstance nextTask : nextTasks) {
             if (checkAllPrevTasksDone(nextTask)) {
-                nextTask.setStatus(1); // 1: Pending (解锁，变为可执行)
+                nextTask.setStatus(TaskStatus.PENDING); // 1: Pending (解锁，变为可执行)
                 taskMapper.updateById(nextTask);
             }
         }
@@ -106,7 +107,7 @@ public class TaskService {
         List<TaskInstance> prevTasks = taskMapper.selectList(prevTasksQuery);
 
         for (TaskInstance pt : prevTasks) {
-            if (pt.getStatus() != 3) {
+            if (pt.getStatus() != TaskStatus.COMPLETED) {
                 return false; // 只要有一个没做完，就不能解锁
             }
         }
