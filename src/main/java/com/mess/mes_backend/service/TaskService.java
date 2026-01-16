@@ -36,8 +36,8 @@ public class TaskService {
 
     @Transactional(rollbackFor = Exception.class)
     public void completeTask(Long taskId, Long operatorId) {
-        // 1. 获取当前任务
-        TaskInstance currentTask = taskMapper.selectById(taskId);
+        // 1. 获取当前任务 (并加锁)
+        TaskInstance currentTask = taskMapper.selectByIdForUpdate(taskId);
         if (currentTask == null) return;
 
         // 2. 更新任务状态

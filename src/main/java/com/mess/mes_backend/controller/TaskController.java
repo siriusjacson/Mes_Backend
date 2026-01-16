@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.Map;
 import com.mess.mes_backend.common.Result;
+import com.mess.mes_backend.dto.TaskCompleteReq;
 
 @RestController
 @RequestMapping("/api/task")
@@ -26,13 +27,14 @@ public class TaskController {
         return Result.success(taskService.getTasksByProject(projectId));
     }
 
+
+
+// ...
     // 2. Complete a task
     // Body: { "taskId": 1, "operatorId": 1001 }
     @PostMapping("/complete")
-    public Result<String> completeTask(@RequestBody Map<String, Long> params) {
-        Long taskId = params.get("taskId");
-        Long operatorId = params.get("operatorId");
-        taskService.completeTask(taskId, operatorId);
+    public Result<String> completeTask(@RequestBody TaskCompleteReq req) {
+        taskService.completeTask(req.getTaskId(), req.getOperatorId());
         return Result.success("Task Completed");
     }
 }
